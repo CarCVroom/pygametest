@@ -1,23 +1,34 @@
 import pygame
 from sys import exit
 
+def display_score():
+    current_time = pygame.time.get_ticks()
+    score_surf = testFont.render(f'{current_time}', False, (64,64,64))
+    score_rect = score_surf.get_rect(center = (400,50))
+    screen.blit(score_surf, score_rect)
+
 pygame.init() # Starts pygame
 screen = pygame.display.set_mode((800,400)) # Sets window size NOTE 0,0 is at the top left
 pygame.display.set_caption("Runner") # Sets window name
 clock = pygame.time.Clock() 
-testFont = pygame.font.Font("RunnerGame/font/Pixeltype.ttf", 50) #Change/remove "Python/" depending on laptop or PC
+testFont = pygame.font.Font("RunnerGame/font/Pixeltype.ttf", 50) 
+game_active = True
 
 skySurface = pygame.image.load("RunnerGame/graphics/Sky.png").convert()
 groundSurface = pygame.image.load("RunnerGame/graphics/ground.png").convert()
 # Lookes for files in ProgrammeringVS, so use path from there 
-textSurface = testFont.render("My game for now", False, "Black")
 
+# Text
+# text_score = testFont.render("My game", False, (64,64,64))
+# text_score_rect = text_score.get_rect(midtop = (400,20))
 
+# Player and snail Models
 snail_surf = pygame.image.load("RunnerGame/graphics/snail/snail1.png").convert_alpha ()
 snail_rect = snail_surf.get_rect(midbottom = (600,300)) # Makes a rectangle
 
 player_surf = pygame.image.load("RunnerGame/graphics/player/player_walk_1.png").convert_alpha() 
 player_rect = player_surf.get_rect(midbottom = (80,300))
+player_gravity = 0
 
 while True:
     # Everything happens in here
@@ -26,18 +37,53 @@ while True:
             pygame.quit() # Ends pygame
             exit() # Ends while True statment with sys
 
-    screen.blit(skySurface, (0,0)) 
-    screen.blit(groundSurface, (0,300))
-    screen.blit(textSurface, (300,50))
+        if game_active:    
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if player_rect.collidepoint(event.pos):
+                    player_gravity= -20
 
-    snail_rect.x -= 4
-    if snail_rect.right <= 0:
-        snail_rect.left = 800
-    screen.blit(snail_surf, snail_rect) # Sets rectangle as pos
-    screen.blit(player_surf, player_rect)
 
-    if player_rect.colliderect(snail_rect):  # No collision = 0, collision = 1 Or True or False
-        print("collision")
-        
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE and player_rect.bottom >= 300:
+                    player_gravity = -20
+
+        else:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                game_active = True
+                snail_rect.left = 800
+
+        # if event.type == pygame.KEYDOWN and game_active == False:
+        #     if event.key == pygame.K_p:
+        #         game_active = True
+        #         snail_rect.left = 800
+        #         player_rect.bottom = 300
+               
+
+    if game_active:   
+        screen.blit(skySurface, (0,0)) 
+        screen.blit(groundSurface, (0,300))
+        # pygame.draw.rect(screen, "#c0e8ec", text_score_rect,)
+        # pygame.draw.rect(screen, "#c0e8ec", text_score_rect, 10)
+        # screen.blit(text_score, text_score_rect)
+        display_score()
+
+        snail_rect.x -= 4
+        if snail_rect.right <= 0:
+            snail_rect.left = 800
+        screen.blit(snail_surf, snail_rect) # Sets rectangle as pos
+
+        # Player
+        player_gravity += 1
+        player_rect.y += player_gravity
+        if player_rect.bottom >= 300:
+            player_rect.bottom = 300
+        screen.blit(player_surf, player_rect)
+
+        # collision
+        if snail_rect.colliderect(player_rect):
+            game_active = False
+    else:
+        screen.fill("Yellow")
+
     pygame.display.update() # Keeps the window open
     clock.tick(60) # Sets framecap
