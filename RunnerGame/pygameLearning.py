@@ -7,11 +7,18 @@ def display_score():
     score_rect = score_surf.get_rect(center = (400,50))
     screen.blit(score_surf, score_rect)
 
+def fps_counter():
+    fps = clock.get_fps()
+    fps_surf = FPS_Font.render(f'{fps:.0f}', False, (0,0,0))
+    fps_rect = fps_surf.get_rect(topleft = (10,10))
+    screen.blit(fps_surf, fps_rect)
+
 pygame.init() # Starts pygame
 screen = pygame.display.set_mode((800,400)) # Sets window size NOTE 0,0 is at the top left
 pygame.display.set_caption("Runner") # Sets window name
 clock = pygame.time.Clock() 
 testFont = pygame.font.Font("RunnerGame/font/Pixeltype.ttf", 50) 
+FPS_Font = pygame.font.Font("RunnerGame/font/Pixeltype.ttf", 25) 
 game_active = True
 
 skySurface = pygame.image.load("RunnerGame/graphics/Sky.png").convert()
@@ -66,6 +73,7 @@ while True:
         # pygame.draw.rect(screen, "#c0e8ec", text_score_rect, 10)
         # screen.blit(text_score, text_score_rect)
         display_score()
+        fps_counter()
 
         snail_rect.x -= 4
         if snail_rect.right <= 0:
