@@ -6,7 +6,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load("RunnerGame/graphics/player/player_walk_1.png").convert_alpha()
-        self.rect
+        self.rect = self.image.get_rect(midbottom = (200,300))
 
 def display_score():
     current_time = int(pygame.time.get_ticks() / 1000)- start_time
@@ -65,6 +65,8 @@ FPS_Font = pygame.font.Font("RunnerGame/font/Pixeltype.ttf", 25)
 game_active = False 
 start_time = 0
 score = 0
+
+player = Player()
 
 skySurface = pygame.image.load("RunnerGame/graphics/Sky.png").convert()
 groundSurface = pygame.image.load("RunnerGame/graphics/ground.png").convert()
