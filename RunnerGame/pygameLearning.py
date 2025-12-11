@@ -2,6 +2,12 @@ import pygame
 from sys import exit
 from random import randint
 
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load("RunnerGame/graphics/player/player_walk_1.png").convert_alpha()
+        self.rect
+
 def display_score():
     current_time = int(pygame.time.get_ticks() / 1000)- start_time
     score_surf = testFont.render(f'Score: {current_time}', False, (64,64,64))
@@ -68,9 +74,19 @@ groundSurface = pygame.image.load("RunnerGame/graphics/ground.png").convert()
 # text_score = testFont.render("My game", False, (64,64,64))
 # text_score_rect = text_score.get_rect(midtop = (400,20))
 
-# Obstacles
-snail_surf = pygame.image.load("RunnerGame/graphics/snail/snail1.png").convert_alpha ()
-fly_surf = pygame.image.load("RunnerGame/graphics/fly/fly1.png").convert_alpha()
+# Snail
+snail_frame_1 = pygame.image.load("RunnerGame/graphics/snail/snail1.png").convert_alpha ()
+snail_frame_2 = pygame.image.load("RunnerGame/graphics/snail/snail2.png").convert_alpha ()
+snail_frames = [snail_frame_1,snail_frame_2]
+snail_frame_index = 0
+snail_surf = snail_frames[snail_frame_index]
+
+# Fly
+fly_frame_1 = pygame.image.load("RunnerGame/graphics/fly/fly1.png").convert_alpha()
+fly_frame_2 = pygame.image.load("RunnerGame/graphics/fly/fly2.png").convert_alpha()
+fly_frames = [fly_frame_1,fly_frame_2]
+fly_frame_index = 0
+fly_surf = fly_frames[fly_frame_index]
 
 obstacle_rect_list = []
 
@@ -100,6 +116,12 @@ intro_text2_rect = intro_text2_surf.get_rect(center = (400, 330))
 obstacle_timer = pygame.USEREVENT + 1 # Add +1 to not fuck up pygame
 pygame.time.set_timer(obstacle_timer, 1400) # 1st argument: What happens, 2nd argument: when it happens
 
+snail_animation_timer = pygame.USEREVENT + 2 
+pygame.time.set_timer(snail_animation_timer,500)
+
+fly_animation_timer = pygame.USEREVENT + 3 
+pygame.time.set_timer(fly_animation_timer,200)
+
 while True:
     # Everything happens in here
     for event in pygame.event.get(): # Listens for player input
@@ -122,6 +144,16 @@ while True:
                     obstacle_rect_list.append(snail_surf.get_rect(midbottom = (randint(900,1100),300)))
                 else: 
                     obstacle_rect_list.append(fly_surf.get_rect(midbottom = (randint(900,1100),210)))
+
+            if event.type == snail_animation_timer:
+                if snail_frame_index == 0: snail_frame_index = 1
+                else: snail_frame_index = 0
+                snail_surf = snail_frames[snail_frame_index]
+
+            if event.type == fly_animation_timer:
+                if fly_frame_index == 0: fly_frame_index = 1
+                else: fly_frame_index = 0
+                fly_surf = fly_frames[fly_frame_index]
                     
 
         else:
