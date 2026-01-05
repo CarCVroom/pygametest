@@ -141,7 +141,7 @@ start_time = 0
 score = 0
 bg_music = pygame.mixer.Sound("RunnerGame/audio/music.wav")
 bg_music.set_volume(0.5)
-bg_music.play(loop = -1)
+bg_music.play(loops = -1)
 
 #Groups
 player = pygame.sprite.GroupSingle() # Makes a Group using Player class
@@ -305,3 +305,4 @@ while True:
 
     pygame.display.update() # Keeps the window open
     clock.tick(60) # Sets framecap
+
