@@ -55,11 +55,16 @@ class Player(pygame.sprite.Sprite):
         elif self.rect.right >= screen_width:
             self.rect.right = screen_width
 
+    def spawn_at_start(self):
+        self.rect.midbottom = (80, 300)
+        self.gravity = 0
+
     def update(self):
         self.player_input()
         self.apply_gravity()
         self.animation_state()
         self.wall_check()
+
 
 class Obstacles(pygame.sprite.Sprite):
     def __init__(self, type):
@@ -172,6 +177,7 @@ player.add(Player())
 
 obstacle_group = pygame.sprite.Group()
 
+#Back ground
 skySurface = pygame.image.load("RunnerGame/graphics/Sky.png").convert()
 sky_surface_width = skySurface.get_width()
 groundSurface = pygame.image.load("RunnerGame/graphics/ground.png").convert()
@@ -282,6 +288,8 @@ while True:
                 if pygame.time.get_ticks() - respawn_start_time > respawn_delay:
                     game_active = True
                     start_time = int(pygame.time.get_ticks() / 1000)
+                    player.sprite.spawn_at_start()
+
 
         # if event.type == obstacle_timer and game_active: # Better to place it in the if game_active statment, but im lazy
         #     print("test")
